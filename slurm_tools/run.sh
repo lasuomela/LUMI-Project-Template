@@ -36,9 +36,26 @@ export NCCL_NET_GDR_LEVEL=PHB
 # We use the Singularity container from 'create_environment.sh'
 # with the --bind option to mount the virtual environment in $ENV_DIR/myenv.sqsh
 # into the container at /user-software.
+#
+# The number of GPUs and nodes are auto-detected from the SLURM environment variables.
 srun singularity exec \
    -B $ENV_DIR/myenv.sqsh:/user-software:image-src=/ $ENV_DIR/$IMAGE_NAME \
     python -m pytorch_example.run \
         --num_gpus=$SLURM_GPUS_ON_NODE \
         --num_nodes=$SLURM_JOB_NUM_NODES \
 
+# Bonus:
+# With full-node allocations, i.e. running jobs on standard-g or small-g with slurm argument `--exclusive,
+# it is beneficial to set the CPU bindings (see https://docs.lumi-supercomputer.eu/runjobs/scheduled-jobs/distribution-binding/#gpu-binding)
+
+# # Define CPU binding for optimal performance in full-node allocations
+# CPU_BIND="mask_cpu:fe000000000000,fe00000000000000"
+# CPU_BIND="${CPU_BIND},fe0000,fe000000"
+# CPU_BIND="${CPU_BIND},fe,fe00"
+# CPU_BIND="${CPU_BIND},fe00000000,fe0000000000"
+
+# srun --cpu-bind=$CPU_BIND singularity exec \
+#    -B $ENV_DIR/myenv.sqsh:/user-software:image-src=/ $ENV_DIR/$IMAGE_NAME \
+#     python -m pytorch_example.run \
+#         --num_gpus=$SLURM_GPUS_ON_NODE \
+#         --num_nodes=$SLURM_JOB_NUM_NODES \
