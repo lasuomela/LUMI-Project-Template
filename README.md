@@ -27,7 +27,7 @@ Epoch 0: 100%|██████████| 2442/2442 [00:49<00:00, 49.25it/s]
 ```
 As you can see, the run with the LUMI container wrapper environment is ~7x slower! But why?
 
-The reason is that fast node-to-node communication on LUMI requires the AWS OFI plugin for RCCL. RCCL is the AMD GPU collective communication library, replacement for NVIDIA NCCL. The plugin enables RCCL to use LUMI's Slingshot-11 interconnect, as RCCL does not support it out of the box. LUMI container wrapper installs are start from a minimal base image that does not include the AWS OFI plugin. While it is possible to manually inject the plugin, it is easier to build Python environments on top of pre-configured ROCm images that already include the plugin. This can be achieved using the [Cotainr tool](https://docs.lumi-supercomputer.eu/software/containers/singularity/#building-containers-using-the-cotainr-tool) available on LUMI.
+The reason is that fast node-to-node communication on LUMI requires the AWS OFI plugin for RCCL, which is the AMD GPU collective communication library, replacement for NVIDIA NCCL. The plugin enables RCCL to use LUMI's Slingshot-11 interconnect, as RCCL does not support it out of the box. LUMI container wrapper installs start from a minimal base image that does not include the AWS OFI plugin. While it is possible to manually inject the plugin, it is easier to build Python environments on top of pre-configured ROCm images that already include it. This can be achieved using the [Cotainr tool](https://docs.lumi-supercomputer.eu/software/containers/singularity/#building-containers-using-the-cotainr-tool) available on LUMI.
 
 
 ## Building a Python environment with Cotainr
